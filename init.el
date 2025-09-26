@@ -18,9 +18,9 @@
 ;;; Package manager
 
 (require 'package)
-(package-initialize)
 (add-to-list 'package-archives
 	     '("melpa" . "https://melpa.org/packages/"))
+(package-initialize)
 
 (when (< emacs-major-version 29)
   (unless (package-installed-p 'use-package)
@@ -28,6 +28,8 @@
       (package-refresh-contents))
     (package-install 'use-package)))
 
+(when (not package-archive-contents)
+  (package-refresh-contents))
 (setq use-package-always-ensure t)
 
 
