@@ -1,0 +1,23 @@
+;;; -*- coding: utf-8; mode: lisp-data -*-
+(("/gnu/store/j8j0x4g6sl434f2ah66asx6rhsh4q35h-emacs-30.1/share/emacs/30.1/lisp/loaddefs.el.gz"
+  . 989344)
+ ("/home/sszczyrb/Repos/emacs/" . 347)
+ ("/gnu/store/j8j0x4g6sl434f2ah66asx6rhsh4q35h-emacs-30.1/share/emacs/30.1/lisp/savehist.el.gz"
+  . 5174)
+ ("/gnu/store/j8j0x4g6sl434f2ah66asx6rhsh4q35h-emacs-30.1/share/emacs/30.1/lisp/subr.el.gz"
+  . 200516)
+ ("/gnu/store/j8j0x4g6sl434f2ah66asx6rhsh4q35h-emacs-30.1/share/emacs/30.1/lisp/net/eww.el.gz"
+  . 26316)
+ ("/home/sszczyrb/temp/reddit.txt" . 1306)
+ ("/home/sszczyrb/.emacs.d/command-stats.el" . 7264)
+ ("/home/sszczyrb/Repos/emacs/reverso-dict.el" . 4234)
+ ("/home/sszczyrb/.emacs.d/.gitignore" . 125)
+ ("/home/sszczyrb/.emacs.d/source/src/xdisp.c" . 1211099)
+ ("/home/sszczyrb/.emacs.d/reverso-dict.el" . 1841)
+ ("/home/sszczyrb/.emacs.d/init.el" . 3901)
+ ("/gnu/store/j8j0x4g6sl434f2ah66asx6rhsh4q35h-emacs-30.1/share/emacs/30.1/lisp/comint.el.gz"
+  . 85061)
+ ("/gnu/store/j8j0x4g6sl434f2ah66asx6rhsh4q35h-emacs-30.1/share/emacs/30.1/lisp/url/url.el.gz"
+  . 6406)
+ ("/gnu/store/j8j0x4g6sl434f2ah66asx6rhsh4q35h-emacs-30.1/share/emacs/30.1/lisp/desktop.el.gz"
+  . 23843))

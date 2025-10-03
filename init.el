@@ -1,9 +1,23 @@
+;;; -*- lexical-binding: t -*-
+
 (setq inhibit-splash-screen t)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (load custom-file :no-error)
 
+(setq source-directory (locate-user-emacs-file "source"))
+
+(set-face-attribute 'default nil :height 150)
+
 (setq enable-recursive-minibuffers t) ; Allows Cx C-f M-: (insert user-init-file)
+(savehist-mode 1) ; Remember command history.
+(setq history-delete-duplicates t)
+
+
+;;; Appearance
+; (enable-theme 'modus-vivendi-deuteranopia)
 
 
 ;;; Backups
@@ -59,6 +73,17 @@
 (keymap-global-set "C-c C-d" #'helpful-at-point)
 (keymap-global-set "C-h F" #'helpful-function) ; replace Info-goto-emacs-command-node
 
+
+;; Scrolling
+
+(setq
+ scroll-margin 15
+ scroll-step 1
+ scroll-conservatively 10
+ scroll-preserve-screen-position 1)
+(pixel-scroll-precision-mode 1)
+
+
 ;;; Text expansion
 
 ;; Expands words, filenames
@@ -80,6 +105,30 @@
         ))
 
 ;; Abbrev mode is used for automatic word replacement (like resume -> résumé).
+;; M+/
+
+
+;; iedit replaces replace and ocurr
+;; https://www.masteringemacs.org/article/iedit-interactive-multi-occurrence-editing-in-your-buffer
+;; C-; C+' works like occur
+(use-package iedit)
+
+(defun iedit-dwim (arg)
+  "Starts iedit but uses \\[narrow-to-defun]."
+  (interactive "P")
+  (if arg
+      (iedit-mode)
+    (save-excursion
+      (save-restriction
+        (widen)
+        ;; this function determines the scope of `iedit-start'.
+        (if iedit-mode
+            (iedit-done)
+          ;; `current-word' can of course be replaced by other
+          ;; functions.
+          (narrow-to-defun)
+          (iedit-start (current-word) (point-min) (point-max)))))))
+(keymap-global-set "C-;" 'iedit-dwim)
 
 ;; Template system
 ;; ah TAB expands to (add-hook 'name-hook 'function)
@@ -92,7 +141,8 @@
 	  snippet-mode) . yas-minor-mode-on)
   :init
   (setq yas-snippet-dir (locate-user-emacs-file "snippets")))
-(use-package yasnippet-snippets)
+;; TODO: Check why segfaults.
+;; (use-package yasnippet-snippets)
 
 (keymap-global-set "M-Z" 'zap-up-to-char)
 
@@ -105,7 +155,19 @@
 
 ;;; Basics
 
-(windmove-default-keybindings) ; SHIFT+arrows
+(save-place-mode 1) ; Remeber cursor position.
+
+;; Remember opened files.
+(desktop-save-mode 1)
+(setq desktop-save t)
+(setq desktop-load-locked-desktop t)
+(setq desktop-restore-frames t)
+(setq desktop-auto-save-timeout 300)
+(setq desktop-globals-to-save nil)
+
+
+;; TODO: Golden ratio for windows
+
 
 ;; FIDO + orderless
 (use-package orderless
@@ -113,10 +175,12 @@
   :config
   (fido-vertical-mode)
   :custom
-  (completion-styles '(orderless)))
+  (completion-styles '(substring orderless basic))
+  (completion-category-overrides '((file (styles partial-completion))))
+  (completion-pcm-leading-wildcard t)) ;; Emacs 31: partial-completion behaves like substring
 
 (defun my-icomplete-styles ()
-  (setq-local completion-styles '(orderless)))
+  (setq-local completion-styles '(substring orderless basic)))
 (add-hook 'icomplete-minibuffer-setup-hook 'my-icomplete-styles)
 
 
@@ -134,11 +198,21 @@
 
 
 ;;; global-set-key
-(global-set-key [f8] 'view-mode) ; SPACE, DEL movement
+(keymap-global-set "<f8>" 'view-mode) ; SPACE, DEL movement
 (keymap-global-set "C-x j" 'bury-buffer) ; move buffer to the end of buffer list making it unlikely to be selected
 (global-set-key [remap list-buffers] 'ibuffer)
-(keymap-global-set "M-o" 'other-window) ; Faster than C-x o
 (keymap-global-set "M-i" 'imenu)
+
+(defun switch-to-buffer-quick ()
+  "Display other-buffer in the selected  window"
+  (interactive)
+  (switch-to-buffer nil nil 'force-same-window))
+(keymap-global-set "s-b" 'switch-to-buffer-quick)
+
+(use-package ace-window)
+(keymap-global-set "M-o" 'ace-window) ; Faster than C-x o
+
+;; TODO (insert (file-newest-backup (buffer-file-name (get-buffer "reverso-dict.el"))))
 
 ;; Trick: binding new key:
 ;; M-x global-set-key RET key cmd RET
@@ -210,24 +284,39 @@
   "Dump command-stats to file."
   (with-current-buffer (find-file-noselect command-stats-file)
     (erase-buffer)
-    (insert "(setq command-stats\n")
-    (prin1 command-stats (current-buffer))
-    (insert ")")
+    (insert "(setq command-stats (ht<-alist '\n")
+    (prin1 (ht->alist command-stats) (current-buffer))
+    (insert "))")
     
     (beginning-of-buffer)
-    (search-forward "data (")
-    (newline 2)
+    ;(down-list)
+    (search-forward "((")
+    (backward-char)
+    ;(newline)
 
     (ignore-error scan-error
         (while t
-          (forward-sexp 2)
-          (delete-char 1) (newline)))
-    (insert ")")
+          (forward-sexp)
+          (newline)))
     
     (save-buffer)))
 
 (defadvice save-buffers-kill-emacs (before update-mod-flag activate)
   (my/command-stats-kill-emacs-hook))
+
+
+;; Org-mode
+(use-package org-web-tools)
+
+
+;;; Reverso Context dictionary
+(load (locate-user-emacs-file "reverso-dict.el"))
+(reverso-dict-restart)
+;; TODO: defadvice for killing *Dictionary* before dictionary-search
+;; TODO: Kill processes on exit.
+
+(defadvice save-buffers-kill-emacs (before update-mod-flag activate)
+  (reverso-dict-stop))
 
 
 ;;; Macros
@@ -241,5 +330,7 @@
   (other-window 1)
   (find-file "~/.emacs.d/init.el" t)
   (other-window 1)
-  (find-file "~/Repos/emacs/emacs-hints.txt" t))
+  (find-file "~/.emacs.d/reverso-dict.el" t))
 (keymap-global-set "C-c p" 'my/prepare-windows)
+
+

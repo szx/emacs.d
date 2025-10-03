@@ -1,0 +1,180 @@
+;; -*- mode: emacs-lisp; lexical-binding:t; coding: utf-8-emacs; -*-
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Sat Oct  4 00:16:52 2025
+;; Desktop file format version 208
+;; Emacs version 30.1
+
+;; Global section:
+(setq desktop-saved-frameset [frameset 1 (26848 19284 613365 853000) (desktop . "208") "sszczyrb@sszczyrb-B560M-DS3H-V2" nil nil ((((minibuffer . t) (undecorated) (override-redirect) (font . "-DAMA-Ubuntu Sans Mono-regular-normal-normal-*-22-*-*-*-m-0-iso10646-1") (border-width . 0) (internal-border-width . 0) (child-frame-border-width) (right-divider-width . 0) (bottom-divider-width . 0) (vertical-scroll-bars . right) (horizontal-scroll-bars) (foreground-color . "#ffffff") (background-color . "#000000") (mouse-color . "OrangeRed") (border-color . "gold") (screen-gamma) (line-spacing) (left-fringe . 8) (right-fringe . 8) (no-special-glyphs) (scroll-bar-foreground . "#646464") (scroll-bar-background . "#1e1e1e") (menu-bar-lines . 0) (tab-bar-lines . 1) (tool-bar-lines . 0) (title) (wait-for-wm . t) (tool-bar-position . top) (inhibit-double-buffering) (icon-type . t) (auto-raise) (auto-lower) (cursor-type . box) (scroll-bar-width . 16) (scroll-bar-height . 16) (alpha) (alpha-background) (no-focus-on-map) (no-accept-focus) (fullscreen . maximized) (visibility . t) (use-frame-synchronization) (skip-taskbar) (z-group) (cursor-color . "#ffffff") (display-type . color) (background-mode . dark) (font-parameter) (sticky) (shaded) (environment) (tabs (current-tab (name . "init.el") (explicit-name))) (last-focus-update . t) (dnd-root-window-position) (frameset--id . "CF85-23DC-EA09-7F66") (frameset--mini t . t) (modeline . t) (unsplittable) (icon-name) (display . ":0.0") (explicit-name) (height . 39) (width . 157) (left . 1920) (top . 0)) ((min-height . 4) (min-width . 20) (min-height-ignore . 3) (min-width-ignore . 10) (min-height-safe . 1) (min-width-safe . 4) (min-pixel-height . 108) (min-pixel-width . 240) (min-pixel-height-ignore . 81) (min-pixel-width-ignore . 120) (min-pixel-height-safe . 27) (min-pixel-width-safe . 48)) hc (pixel-width . 1920) (pixel-height . 999) (total-width . 160) (total-height . 37) (normal-height . 1.0) (normal-width . 1.0) (combination-limit) (leaf (pixel-width . 952) (pixel-height . 999) (total-width . 79) (total-height . 37) (normal-height . 1.0) (normal-width . 0.4959677419354839) (buffer "reverso-dict.el<.emacs.d>" (selected) (hscroll . 0) (fringes 8 8 nil nil) (margins nil) (scroll-bars nil 2 t nil 0 t nil) (vscroll . 0) (dedicated) (point . 1841) (start . 1484)) (prev-buffers ("xdisp.c" 1209789 1211099) (".gitignore" 1 125) ("*scratch*" 1 1) ("*Messages*" 1 1334) ("reverso-dict.el<emacs>" 3812 4234) ("command-stats.el" 6767 7264) ("reddit.txt" 124 1306) ("eww.el.gz" 25529 26316) ("subr.el.gz" 199755 200516) ("custom.el" 1 1) ("savehist.el.gz" 4637 5174) ("*Find*" 1 347) ("loaddefs.el.gz" 988769 989344) ("*info*" 12783 14351) ("reverso-dict.el<.emacs.d>" 1484 1841))) (leaf (last . t) (pixel-width . 968) (pixel-height . 999) (total-width . 81) (total-height . 37) (normal-height . 1.0) (normal-width . 0.5040322580645161) (buffer "init.el" (selected . t) (hscroll . 0) (fringes 8 8 nil nil) (margins nil) (scroll-bars nil 2 t nil 0 t nil) (vscroll . 0) (dedicated) (point . 3901) (start . 3211)) (prev-buffers ("xdisp.c" 1210084 1211099)))))])
+
+;; Buffer section -- buffers listed in same order as in buffer list:
+(desktop-create-buffer 208
+  "/home/sszczyrb/.emacs.d/init.el"
+  "init.el"
+  'emacs-lisp-mode
+  '(yas-minor-mode completion-preview-mode eldoc-mode font-lock-mode)
+  3901
+  '(3879 nil)
+  nil
+  nil
+  '((buffer-display-time 26848 19257 417365 17000) (buffer-file-coding-system . utf-8-unix))
+  '((mark-ring (2155 2155 3872 3981 4024 3879 3880))))
+
+(desktop-create-buffer 208
+  "/home/sszczyrb/.emacs.d/reverso-dict.el"
+  "reverso-dict.el"
+  'emacs-lisp-mode
+  '(yas-minor-mode completion-preview-mode eldoc-mode font-lock-mode)
+  1841
+  '(532 nil)
+  nil
+  nil
+  '((buffer-display-time 26848 19257 417364 889000) (buffer-file-coding-system . prefer-utf-8-unix))
+  '((mark-ring (902 803 1536 1713 1841))))
+
+(desktop-create-buffer 208
+  "/home/sszczyrb/.emacs.d/source/src/xdisp.c"
+  "xdisp.c"
+  'c-mode
+  '(yas-minor-mode bug-reference-prog-mode completion-preview-mode font-lock-mode)
+  1211099
+  '(1210304 nil)
+  nil
+  nil
+  '((tab-width . 8) (indent-tabs-mode . t) (buffer-display-time 26848 19244 36905 571000) (buffer-file-coding-system . undecided-unix) (fill-column . 72))
+  '((mark-ring (1210479 1210935 1211099))))
+
+(desktop-create-buffer 208
+  "/home/sszczyrb/.emacs.d/.gitignore"
+  ".gitignore"
+  'fundamental-mode
+  '(font-lock-mode completion-preview-mode)
+  125
+  '(125 nil)
+  nil
+  nil
+  '((buffer-display-time 26848 19226 443417 271000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring (125))))
+
+(desktop-create-buffer 208
+  nil
+  "*info*"
+  'Info-mode
+  '(isearch-fold-quotes-mode font-lock-mode)
+  19945
+  '(20428 nil)
+  t
+  '("/home/sszczyrb/.emacs.d/elpa/sicp-20240826.1844/sicp" "Foreword" ((history ("/home/sszczyrb/.emacs.d/elpa/sicp-20240826.1844/sicp" "Preface" 23595) ("/home/sszczyrb/.emacs.d/elpa/sicp-20240826.1844/sicp" "Foreword" 14117) ("/home/sszczyrb/.emacs.d/elpa/sicp-20240826.1844/sicp" "Dedication" 11862) ("/home/sszczyrb/.emacs.d/elpa/sicp-20240826.1844/sicp" "UTF" 10662) ("/home/sszczyrb/.emacs.d/elpa/sicp-20240826.1844/sicp" "Top" 628) ("dir" "Top" 6124) ("/home/sszczyrb/.guix-profile/share/info/elisp" "Timers" 4024128))))
+  '((tab-width . 8) (buffer-display-time 26848 19235 610418 109000) (buffer-file-coding-system . undecided-unix) (case-fold-search . t))
+  '((mark-ring (19341 13263 13754 1 1 1 1 1 1 1 1 1 1 1 1 20013))))
+
+(desktop-create-buffer 208
+  "/home/sszczyrb/Repos/emacs/reverso-dict.el"
+  "reverso-dict.el"
+  'emacs-lisp-mode
+  '(font-lock-mode eldoc-mode completion-preview-mode yas-minor-mode)
+  4234
+  '(4234 nil)
+  nil
+  nil
+  '((buffer-display-time 26848 19189 698999 221000) (buffer-file-coding-system . prefer-utf-8-unix))
+  '((mark-ring (1669 1 1591 1450 986 868 897 902 845 1386 1024 1024 1024 1024 1501 1193))))
+
+(desktop-create-buffer 208
+  "/home/sszczyrb/.emacs.d/command-stats.el"
+  "command-stats.el"
+  'emacs-lisp-mode
+  '(completion-preview-mode font-lock-mode eldoc-mode yas-minor-mode)
+  7264
+  '(7267 nil)
+  nil
+  nil
+  '((buffer-display-time 26848 19188 813261 475000) (buffer-file-coding-system . prefer-utf-8-unix))
+  '((mark-ring (1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1))))
+
+(desktop-create-buffer 208
+  "/home/sszczyrb/temp/reddit.txt"
+  "reddit.txt"
+  'text-mode
+  '(font-lock-mode completion-preview-mode yas-minor-mode)
+  1306
+  '(1260 nil)
+  nil
+  nil
+  '((buffer-display-time 26848 19188 114001 659000) (buffer-file-coding-system . undecided-unix))
+  '((mark-ring (173))))
+
+(desktop-create-buffer 208
+  "/gnu/store/j8j0x4g6sl434f2ah66asx6rhsh4q35h-emacs-30.1/share/emacs/30.1/lisp/net/eww.el.gz"
+  "eww.el.gz"
+  'emacs-lisp-mode
+  '(font-lock-mode eldoc-mode completion-preview-mode yas-minor-mode)
+  26316
+  '(7453 nil)
+  t
+  nil
+  '((buffer-display-time 26848 19187 557943 306000) (buffer-file-coding-system . utf-8-unix))
+  '((mark-ring (26165 49705 26401 26170 26210 7381 7451 7450 7450 7451 7451 41514 99858 78166 49247 26316))))
+
+(desktop-create-buffer 208
+  "/gnu/store/j8j0x4g6sl434f2ah66asx6rhsh4q35h-emacs-30.1/share/emacs/30.1/lisp/subr.el.gz"
+  "subr.el.gz"
+  'emacs-lisp-mode
+  '(font-lock-mode eldoc-mode completion-preview-mode yas-minor-mode)
+  200516
+  '(nil nil)
+  t
+  nil
+  '((buffer-display-time 26848 19187 16922 969000) (buffer-file-coding-system . utf-8-unix))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/home/sszczyrb/.emacs.d/custom.el"
+  "custom.el"
+  'emacs-lisp-mode
+  '(font-lock-mode eldoc-mode completion-preview-mode yas-minor-mode)
+  1
+  '(1 nil)
+  nil
+  nil
+  '((buffer-display-time 26848 19186 516217 826000) (buffer-file-coding-system . prefer-utf-8-unix))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/gnu/store/j8j0x4g6sl434f2ah66asx6rhsh4q35h-emacs-30.1/share/emacs/30.1/lisp/savehist.el.gz"
+  "savehist.el.gz"
+  'emacs-lisp-mode
+  '(font-lock-mode eldoc-mode completion-preview-mode yas-minor-mode)
+  5174
+  '(nil nil)
+  t
+  nil
+  '((buffer-display-time 26848 19186 46380 645000) (buffer-file-coding-system . utf-8-unix))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  nil
+  "*Find*"
+  'dired-mode
+  '(font-lock-mode)
+  347
+  '(347 nil)
+  t
+  '("/home/sszczyrb/Repos/emacs/")
+  '((buffer-display-time 26848 19185 538155 643000))
+  '((mark-ring nil)))
+
+(desktop-create-buffer 208
+  "/gnu/store/j8j0x4g6sl434f2ah66asx6rhsh4q35h-emacs-30.1/share/emacs/30.1/lisp/loaddefs.el.gz"
+  "loaddefs.el.gz"
+  'emacs-lisp-mode
+  '(yas-minor-mode completion-preview-mode eldoc-mode font-lock-mode)
+  989344
+  '(nil nil)
+  t
+  nil
+  '((buffer-display-time 26848 19257 415060 166000) (buffer-file-coding-system . utf-8-emacs-unix))
+  '((mark-ring nil)))
+
