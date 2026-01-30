@@ -112,6 +112,7 @@
 (use-package s)
 (use-package elmacro)
 (elmacro-mode)
+(require 'cl-lib)
 
 ;;; allow right ALT when focused.
 
@@ -131,6 +132,13 @@
 
 (keymap-global-set "C-c C-d" #'helpful-at-point)
 (keymap-global-set "C-h F" #'helpful-function) ; replace Info-goto-emacs-command-node
+
+(defun my/kill-auxiliary-windows ()
+  "Kill buffer and its window on quitting."
+  (local-set-key (kbd "q") 'kill-buffer-and-window))
+(add-hook 'special-mode-hook #'my/kill-auxiliary-windows)
+(add-hook 'compilation-mode-hook #'my/kill-auxiliary-windows)
+
 
 ;; Xref using dumb-jump
 
@@ -207,6 +215,11 @@
 	     '("\\`\\*\\(Warnings\\|Compile-Log\\|Org-Babel Error Output\\)\\*\\'"
                (display-buffer-no-window)
                (allow-no-window . t)))
+(add-to-list 'display-buffer-alist
+	     '("\\*helpful .*\\*\\'"
+               (display-buffer-reuse-mode-window display-buffer-pop-up-window)
+               ;;(dedicated . t)
+               ))
 
 ;;; Basics
 
@@ -300,6 +313,11 @@
 (use-package rust-mode)
 (use-package geiser-guile)
 
+(use-package company
+  :config
+  (add-hook 'after-init-hook #'global-company-mode))
+
+
 (use-package lsp-mode
   :commands lsp
   :init (setq lsp-keymap-prefix "C-c l")
@@ -366,6 +384,50 @@
 
 (use-package ace-window)
 (keymap-global-set "M-o" 'ace-window) ; Faster than C-x o
+(advice-add (keymap-global-lookup "M-o") :before
+            (defun other-window-split-if-single (&rest _)
+              "Split the frame if there is a single window."
+              (when (one-window-p) (split-window-sensibly))))
+
+
+;; Fix annoying vertical window splitting.
+;; https://lists.gnu.org/archive/html/help-gnu-emacs/2015-08/msg00339.html
+(with-eval-after-load "window"
+  (defcustom split-window-below nil
+    "If non-nil, vertical splits produce new windows below."
+    :group 'windows
+    :type 'boolean)
+
+  (defcustom split-window-right nil
+    "If non-nil, horizontal splits produce new windows to the right."
+    :group 'windows
+    :type 'boolean)
+
+  (fmakunbound #'split-window-sensibly)
+
+  (defun split-window-sensibly
+      (&optional window)
+    (setq window (or window (selected-window)))
+    (or (and (window-splittable-p window t)
+             ;; Split window horizontally.
+             (split-window window nil (if split-window-right 'left  'right)))
+        (and (window-splittable-p window)
+             ;; Split window vertically.
+             (split-window window nil (if split-window-below 'above 'below)))
+        (and (eq window (frame-root-window (window-frame window)))
+             (not (window-minibuffer-p window))
+             ;; If WINDOW is the only window on its frame and is not the
+             ;; minibuffer window, try to split it horizontally disregarding the
+             ;; value of `split-width-threshold'.
+             (let ((split-width-threshold 0))
+               (when (window-splittable-p window t)
+                 (split-window window nil (if split-window-right
+                                              'left
+                                            'right))))))))
+
+(setq-default split-height-threshold  4
+              split-width-threshold   80) ; the reasonable limit for horizontal splits
+
 
 ;; TODO (insert (file-newest-backup (buffer-file-name current-buffer)))
 
@@ -492,6 +554,7 @@
 (use-package org-web-tools)
 (customize-set-value 'org-src-tab-acts-natively t)
 (customize-set-value 'org-edit-src-content-indentation 0)
+(customize-set-value 'org-confirm-babel-evaluate nil)
 
 (defun org-web-tools-insert-link-for-clipboard-url ()
   "Extend =org-web-tools-insert-link-for-url= to take URL from clipboard or 'kill-ring'."
@@ -505,6 +568,9 @@
          :before-finalize (lambda () (my/org-capture-prompt-date "SCHEDULED")))
         ("j" "Journal" entry (file+datetree "~/org/journal.org")
          "* %U %^{Title}\n%?")
+        ("w" "Weight" table-line (file+headline "~/org/journal.org" "Weight")
+         "| %U | %? |"
+         :unnarrowed t)
         ("b" "Bookmark (Clipboard)" entry (file+headline "~/org/journal.org" "Bookmarks")
          "** %(org-web-tools-insert-link-for-clipboard-url)\n%?" :empty-lines 1 :prepend t)))
 
@@ -582,21 +648,21 @@ So a typical ID could look like \"Org:4nd91V40HI\"."
     (concat prefix unique)))
 
 (defun my/org-custom-id-get (&optional pom create prefix)
-  "Get the CUSTOM_ID property of the entry at point-or-marker POM.
+  "Get the ID property of the entry at point-or-marker POM.
 If POM is nil, refer to the entry at point.  If the entry does
-not have an CUSTOM_ID, the function returns nil.  However, when
-CREATE is non nil, create a CUSTOM_ID if none is present
+not have an ID, the function returns nil.  However, when
+CREATE is non nil, create a ID if none is present
 already.  PREFIX will be passed through to `org-id-new'.  In any
-case, the CUSTOM_ID of the entry is returned."
+case, the ID of the entry is returned."
   (interactive)
   (org-with-point-at pom
-    (let ((id (org-entry-get nil "CUSTOM_ID")))
+    (let ((id (org-entry-get nil "ID")))
       (cond
        ((and id (stringp id) (string-match "\\S-" id))
         id)
        (create
         (setq id (org-id-new (concat prefix "h")))
-        (org-entry-put pom "CUSTOM_ID" id)
+        (org-entry-put pom "ID" id)
         (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
         id)))))
 
@@ -620,6 +686,18 @@ case, the CUSTOM_ID of the entry is returned."
                                    (eq buffer-read-only nil))
                           (my/org-add-ids-to-headlines-in-file))))))
 
+(use-package org-ql)
+(require 'org-ql)
+
+(use-package lisp-fsrs
+  :straight (:host github :repo "open-spaced-repetition/lisp-fsrs"))
+
+(use-package gnuplot)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((gnuplot . t)
+   (emacs-lisp . t)))
 
 (defun org-babel-detangle-no-buffer-pop-up (orig-fun &rest args)
   (save-excursion
@@ -661,3 +739,30 @@ case, the CUSTOM_ID of the entry is returned."
   (when buffer-file-name
     (find-alternate-file
      (concat "/sudo:root@localhost:" buffer-file-name))))
+
+
+(when (executable-find "rg")
+  (grep-apply-setting
+   'grep-find-command
+   '("rg -n -H --no-heading -e '' $(git rev-parse --show-toplevel || pwd)" . 27)))
+;; Test
+
+(defun my/speak (str)
+  (shell-command (format "echo \"(SayText \\\"%s\\\")\" | festival '(voice_cmu_us_slt_arctic_hts)' --pipe" str)))
+
+(use-package org-srs)
+(require 'org-srs)
+
+
+(defun my/write (file data)
+  "Write Lisp DATA to FILE."
+  (with-temp-file file
+    (prin1 data (current-buffer))))
+
+(defun my/read (file symbol)
+  "Read Lisp data from FILE to SYMBOL."
+  (when (boundp symbol)
+    (with-temp-buffer
+      (insert-file-contents file)
+      (goto-char (point-min))
+      (set symbol (read (current-buffer))))))
