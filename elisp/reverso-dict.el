@@ -36,12 +36,32 @@
       (remove-hook 'eww-after-render-hook #'reverso-dict--hook)
       (setq reverso-dict--web-done nil)
       (setq eww-data (copy-sequence old-data))
-      ;(eww-readable) ;; TODO: Better readable from firefox?
-    (mark-whole-buffer)
-    (kill-ring-save nil nil 'region)
-    (kill-buffer)
-    (current-kill 0 'do-not-move)
-    )))
+      ;;(eww-readable) ;; TODO: Better readable from firefox?
+      (let (beg end str (inhibit-read-only t))
+        (while (re-search-forward (rx bol (1+ "Submit" (0+ blank))) nil t)
+	  (replace-match "\n\n"))
+        (goto-char (point-min))
+        (while (search-forward reverso-dict--word nil t)
+          (replace-match (concat "{+" reverso-dict--word "+}")))
+        (goto-char (point-min))
+        (while (re-search-forward (rx bol (or "Potentially sensitive or inappropriate" "Definition NEW" "More expressions") (+? anychar) (or "words based on your search" "Display more examples" "Search in Web" (and bol "games" eol))) nil t)
+	  (replace-match "\n\n"))
+        ;;(delete-duplicate-lines (point-min) (point-max))
+        (goto-char (point-min))
+        (while (re-search-forward (rx (>= 3 "\n")) nil t)
+	  (replace-match "\n\n"))
+        (goto-char (point-min))
+        (search-forward "Add to list")
+        (forward-line)
+        (setq beg (point))
+        (if (not (re-search-forward (rx "Results") nil t))
+            (goto-char (point-max))
+          (beginning-of-line) (forward-line -1))
+        (setq end (point))
+        (setq str (buffer-substring beg end))
+        (kill-buffer)
+        str))))
+
 
 (defun reverso-dict--desc (word)
   (setq reverso-dict--word word)
@@ -56,7 +76,7 @@
     (insert msg)
     (cond ((string-match (rx "define" blank "\*" blank  (syntax string-quote) (group (* ascii)) (syntax string-quote) "\n") msg)
            (let* ((word (match-string 1 msg))
-                 (desc (reverso-dict--desc word)))
+                  (desc (reverso-dict--desc word)))
              (message "[reverso-dict--filter] describe %S" word)
              (process-send-string proc (reverso-dict--msg "150 1 definitions found: list follows"))
              (process-send-string proc (reverso-dict--msg "151 \"%s\" db_name \"db_desc\" - text follows\n%s\n%s" word word desc))
@@ -79,7 +99,7 @@
              (kill-buffer buffer))))
         (t (message "something went wrong"))))
 
-;(fmakunbound 'reverso-dict--msg)
+                                        ;(fmakunbound 'reverso-dict--msg)
 
 (defun reverso-dict-start ()
   "Start DICT server for Reverso Context."
@@ -111,3 +131,4 @@
   (reverso-dict-stop)
   (reverso-dict-start))
 
+(provide 'reverso-dict)

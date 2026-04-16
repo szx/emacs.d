@@ -1,0 +1,98 @@
+;;; colorcomp.el --- Select RGB color interactively. Taken from Emacs Manual. -*- lexical-binding: t -*-
+
+;;; package --- Summary
+
+;;; Commentary:
+
+;;; Code:
+
+(setq colorcomp-ewoc nil
+      colorcomp-data nil
+      colorcomp-mode-map nil
+      colorcomp-labels ["Red" "Green" "Blue"])
+
+(defun colorcomp-pp (data)
+  (if data
+      (let ((comp (aref colorcomp-data data)))
+        (insert (aref colorcomp-labels data) "\t: #x"
+                (format "%02X" comp) " "
+                (make-string (ash comp -2) ?#) "\n"))
+    (let ((cstr (format "#%02X%02X%02X"
+                        (aref colorcomp-data 0)
+                        (aref colorcomp-data 1)
+                        (aref colorcomp-data 2)))
+          (samp " (sample text) "))
+      (insert "Color\t: "
+              (propertize samp 'face
+                          `(foreground-color . ,cstr))
+              (propertize samp 'face
+                          `(background-color . ,cstr))
+              "\n"))))
+
+(defun colorcomp (color)
+  "Allow fiddling with COLOR in a new buffer.
+The buffer is in Color Components mode."
+  (interactive "sColor (name or #RGB or #RRGGBB): ")
+  (when (string= "" color)
+    (setq color "green"))
+  (unless (color-values color)
+    (error "No such color: %S" color))
+  (switch-to-buffer
+   (generate-new-buffer (format "originally: %s" color)))
+  (kill-all-local-variables)
+  (setq major-mode 'colorcomp-mode
+        mode-name "Color Components")
+  (use-local-map colorcomp-mode-map)
+  (erase-buffer)
+  (buffer-disable-undo)
+  (let ((data (apply 'vector (mapcar (lambda (n) (ash n -8))
+                                     (color-values color))))
+        (ewoc (ewoc-create 'colorcomp-pp
+                           "\nColor Components\n\n"
+                           (substitute-command-keys
+                            "\n\\{colorcomp-mode-map}"))))
+    (set (make-local-variable 'colorcomp-data) data)
+    (set (make-local-variable 'colorcomp-ewoc) ewoc)
+    (ewoc-enter-last ewoc 0)
+    (ewoc-enter-last ewoc 1)
+    (ewoc-enter-last ewoc 2)
+    (ewoc-enter-last ewoc nil)))
+
+(defun colorcomp-mod (index limit delta)
+  (let ((cur (aref colorcomp-data index)))
+    (unless (= limit cur)
+      (aset colorcomp-data index (+ cur delta)))
+    (ewoc-invalidate
+     colorcomp-ewoc
+     (ewoc-nth colorcomp-ewoc index)
+     (ewoc-nth colorcomp-ewoc -1))))
+
+(defun colorcomp-R-more () (interactive) (colorcomp-mod 0 255 1))
+(defun colorcomp-G-more () (interactive) (colorcomp-mod 1 255 1))
+(defun colorcomp-B-more () (interactive) (colorcomp-mod 2 255 1))
+(defun colorcomp-R-less () (interactive) (colorcomp-mod 0 0 -1))
+(defun colorcomp-G-less () (interactive) (colorcomp-mod 1 0 -1))
+(defun colorcomp-B-less () (interactive) (colorcomp-mod 2 0 -1))
+
+(defun colorcomp-copy-as-kill-and-exit ()
+  "Copy the color components into the kill ring and kill the buffer.
+The string is formatted #RRGGBB (hash followed by six hex digits)."
+  (interactive)
+  (kill-new (format "#%02X%02X%02X"
+                    (aref colorcomp-data 0)
+                    (aref colorcomp-data 1)
+                    (aref colorcomp-data 2)))
+  (kill-buffer nil))
+
+(setq colorcomp-mode-map
+      (define-keymap :suppress t
+        "i" 'colorcomp-R-less
+        "o" 'colorcomp-R-more
+        "k" 'colorcomp-G-less
+        "l" 'colorcomp-G-more
+        "," 'colorcomp-B-less
+        "." 'colorcomp-B-more
+        "SPC" 'colorcomp-copy-as-kill-and-exit))
+
+(provide 'colorcomp)
+;;; colorcomp.el ends here

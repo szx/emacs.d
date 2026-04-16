@@ -20,10 +20,13 @@ history
 /transient
 projects
 /places
-#*#
+\#*#
 .cache/
 .dap-breakpoints
 .lsp-session-v1
 .org-id-locations
 /var
 /persist
+/tree-sitter
+/multisession
+/source
